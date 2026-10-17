@@ -7,37 +7,40 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#101826;--slate:#1B2A3F;--blue:#3DA5FF;--teal:#3DD6A5;--paper:#EAF0F7;--muted:#8FA0B8;color-scheme:dark}
-html,body{margin:0;height:100%;background:#101826;color:var(--paper);font:14px/1.5 'IBM Plex Sans',system-ui,sans-serif;overflow:hidden}
+html{font-size:calc(14px*var(--ts,1))}html,body{margin:0;height:100%;background:#101826;color:var(--paper);font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.5;overflow:hidden}
 canvas{display:block;width:100%;height:100%;touch-action:none}
 h1,h2{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;margin:0}
 button{font:inherit;color:var(--paper);background:#24385299;border:1px solid #3a5272;border-radius:6px;padding:6px 10px;cursor:pointer}
 button:hover{background:#2c4466}
 button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 #bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:12px;padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px;background:#101826dd;border-bottom:1px solid #2a3d57}
-#bar h1{font-size:16px}
+#bar h1{font-size:1.15rem}
 #bar .r{color:var(--teal);font-weight:500;white-space:nowrap}
-#drawer{position:absolute;top:calc(44px + env(safe-area-inset-top,0px));right:0;bottom:0;width:min(300px,100%);box-sizing:border-box;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:#1B2A3Fe6;border-left:1px solid #2a3d57;overflow:auto;transform:translateX(100%);transition:transform .18s}
+#drawer{position:absolute;top:calc(2.9rem + env(safe-area-inset-top,0px));right:0;bottom:0;width:min(21rem,100%);box-sizing:border-box;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:#1B2A3Fe6;border-left:1px solid #2a3d57;overflow:auto;transform:translateX(100%);transition:transform .18s}
 #drawer.open{transform:none}
-#tabs{position:absolute;top:calc(52px + env(safe-area-inset-top,0px));right:8px;display:flex;gap:6px;z-index:2}
-#drawer.open~#tabs{right:calc(min(300px,100%) + 8px)}
-#drawer h2{font-size:17px;margin:34px 0 6px}
+#tabs{position:absolute;top:calc(3.4rem + env(safe-area-inset-top,0px));right:8px;display:flex;gap:6px;z-index:2}
+#drawer.open~#tabs{right:calc(min(21rem,100%) + 8px)}
+#drawer h2{font-size:1.2rem;margin:2.4rem 0 .4rem}
 #drawer p{margin:6px 0}
-.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:4px;background:#101826;color:var(--muted);border:1px solid #2a3d57}
+.tag{display:inline-block;font-size:.85rem;padding:1px 8px;border-radius:4px;background:#101826;color:var(--muted);border:1px solid #2a3d57}
 .row{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:6px 0}
 #prompt{position:absolute;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--blue);color:#04202F;border:0;font-weight:500;padding:8px 14px}
 #prompt:hover{background:#6bbcff}
 #toast{position:absolute;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#101826ee;border:1px solid #2a3d57;padding:6px 12px;border-radius:6px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:80%;text-align:center}
-#help{position:absolute;left:14px;top:calc(56px + env(safe-area-inset-top,0px));color:#EAF0F7cc;font-size:12px;background:#10182688;padding:4px 8px;border-radius:6px}
+#help{position:absolute;left:14px;top:calc(3.6rem + env(safe-area-inset-top,0px));max-width:60%;color:#EAF0F7cc;font-size:.85rem;background:#10182688;padding:4px 8px;border-radius:6px}
 #mm{display:block;margin-top:10px;background:#101826;border:1px solid #2a3d57;border-radius:6px}
+#perf{position:absolute;left:50%;transform:translateX(-50%);top:calc(3.4rem + env(safe-area-inset-top,0px));font-size:.8rem;background:#101826cc;color:#3DD6A5;padding:2px 8px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media (prefers-reduced-motion:reduce){#drawer,#toast{transition:none}}
 #err{position:absolute;inset:60px 20px auto;color:#ffb4a8}
 </style>
 </head>
 <body>
 <canvas id="c" aria-label="3D game world"></canvas>
 <header id="bar"><h1 id="zn">Residential Area</h1><div class="r"><span id="cr">1,000 cr</span> · <span id="clk">Day 1 08:00</span></div></header>
-<div id="help">Move: WASD or arrows · Orbit: drag · E: interact · V: district view</div>
-<aside id="drawer" aria-live="polite"><div id="panel"></div><canvas id="mm" width="130" height="130" aria-label="Minimap"></canvas></aside>
-<div id="tabs"><button id="tp" aria-controls="drawer">Profile</button><button id="tm">Map</button></div>
+<div id="help"></div><div id="perf" hidden></div><div class="sr" id="live" aria-live="polite"></div>
+<aside id="drawer" aria-live="polite"><div id="panel"></div><canvas id="mm" width="130" height="130" aria-label="Minimap"></canvas><p class="tag">Minimap: ◆ transit stop · ■ building · ▲ you</p></aside>
+<div id="tabs"><button id="tp" aria-controls="drawer">Profile</button><button id="tm">Map</button><button id="tset">Settings</button></div>
 <button id="prompt" hidden></button>
 <div id="toast" role="status"></div>
 <div id="err"></div>
@@ -102,18 +105,22 @@ function build(k){
   marks.push({id,name,info,x0:x-w/2,x1:x+w/2,z0:zz-d/2,z1:zz+d/2,flat});
  });
  const R=rng(k.length*7919),n=k==='rural'?90:55,tm=new THREE.MeshLambertMaterial({color:0x2f6b43}),km=new THREE.MeshLambertMaterial({color:0x6b4a2f});
+ const P=[];
  for(let i=0;i<n;i++){const x=(R()-.5)*(z.size-10),zz=(R()-.5)*(z.size-10);
   if(Math.abs(x)<8||Math.abs(zz)<8||z.L.some(l=>x>l[2]-l[4]/2-3&&x<l[2]+l[4]/2+3&&zz>l[3]-l[5]/2-3&&zz<l[3]+l[5]/2+3))continue;
-  const t=new THREE.Mesh(new THREE.ConeGeometry(2,5,8),tm);t.position.set(x,3.5,zz);const tr=new THREE.Mesh(new THREE.CylinderGeometry(.35,.35,1.2),km);tr.position.set(x,.6,zz);world.add(t,tr)}
+  P.push([x,zz])}
+ const ci=new THREE.InstancedMesh(new THREE.ConeGeometry(2,5,8),tm,P.length),ti=new THREE.InstancedMesh(new THREE.CylinderGeometry(.35,.35,1.2),km,P.length),M=new THREE.Matrix4();
+ P.forEach(([x,zz],i)=>{ci.setMatrixAt(i,M.makeTranslation(x,3.5,zz));ti.setMatrixAt(i,M.makeTranslation(x,.6,zz))});
+ ci.frustumCulled=ti.frustumCulled=false;world.add(ci,ti)
  scene.add(world);$('zn').textContent=z.name;S.zone=k;drawMap();
 }
 function nearest(){let best=null,bd=4.5;const p=player.position;
  for(const m of marks){const dx=Math.max(m.x0-p.x,0,p.x-m.x1),dz=Math.max(m.z0-p.z,0,p.z-m.z1),d=Math.hypot(dx,dz);if(d<bd){bd=d;best=m}}return best}
 function toast(t){const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.opacity=0,2600)}
-function open(html){$('panel').innerHTML=html;$('drawer').classList.add('open')}
+function open(html){const p=$('panel');p.innerHTML=html;p.tabIndex=-1;$('drawer').classList.add('open');p.focus({preventScroll:true})}
 function close(){$('drawer').classList.remove('open')}
 function cr(){$('cr').textContent=S.credits.toLocaleString()+' cr'}
-function mapHtml(){const f=FARE[S.zone];return '<h2>Map and transit</h2><p>Travel keeps your credits. Fares are provisional balance values, not final prices.</p>'+Object.keys(Z).map(k=>k===S.zone?`<div class="row"><span>${Z[k].name}</span><span class="tag">You are here</span></div>`:`<div class="row"><span>${Z[k].name}<br><span class="tag">${f[k]} cr</span></span><button data-go="${k}">Travel</button></div>`).join('')+'<p class="tag">Travel works at a transit stop.</p>'}
+function mapHtml(){const f=FARE[S.zone];return '<h2>Map and transit</h2><p>Travel keeps your credits. Fares are provisional balance values, not final prices.</p>'+Object.keys(Z).map(k=>k===S.zone?`<div class="row"><span>${Z[k].name}</span><span class="tag">You are here</span></div>`:`<div class="row"><span>${Z[k].name}<br><span class="tag">${f[k]} cr${S.credits<f[k]?' · you have '+S.credits:''}</span></span><button data-go="${k}">Travel</button></div>`).join('')+'<p class="tag">Travel works at a transit stop.</p>'}
 function profHtml(){return `<h2>Citizen profile</h2><div class="row"><span>Status</span><span>Fresh graduate</span></div><div class="row"><span>Credits</span><span>${S.credits.toLocaleString()}</span></div><div class="row"><span>Location</span><span>${Z[S.zone].name}</span></div><p class="tag">Degree, institution, loans and skills aren’t built yet.</p><p class="tag">Credits are stored in this browser only, not on a server.</p>`}
 function interact(){const m=nearest();if(!m)return;
  if(m.id==='transit'){open(mapHtml());return}
@@ -123,11 +130,39 @@ function go(k){
  const m=nearest();if(!m||m.id!=='transit'){toast('Walk to a transit stop to travel.');return}
  const f=FARE[S.zone][k];if(S.credits<f){toast('You need '+f+' cr for this trip.');return}
  S.credits-=f;cr();build(k);player.position.set(0,0,12);S.x=0;S.z=12;save();toast('Arrived in '+Z[k].name+'. Fare: '+f+' cr');open(mapHtml())}
-$('drawer').addEventListener('click',e=>{const g=e.target.dataset&&e.target.dataset.go;if(g)go(g)});
+$('drawer').addEventListener('click',e=>{const d=e.target.dataset||{};
+ if(d.go)go(d.go);
+ else if(d.bind){rebinding=d.bind;settings()}
+ else if(d.ts){TS=+d.ts;try{localStorage.setItem('opp-ts',String(TS))}catch(x){}applyTS();settings()}
+ else if(d.reset){BIND={...DEF};try{localStorage.removeItem('opp-binds')}catch(x){}helpText();settings();toast('Keys reset')}});
 $('tp').onclick=()=>open(profHtml());$('tm').onclick=()=>open(mapHtml());
-$('prompt').onclick=interact;
-addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;if(k==='e')interact();else if(k==='v')district=!district;else if(k==='m')open(mapHtml());else if(k==='p')open(profHtml());else if(k==='escape')close()});
-addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+$('prompt').onclick=interact;$('tset').onclick=()=>settings();
+const DEF={fwd:'KeyW',back:'KeyS',left:'KeyA',right:'KeyD',sprint:'ShiftLeft',interact:'KeyE',district:'KeyV',map:'KeyM',profile:'KeyP'};
+const ALT={fwd:'ArrowUp',back:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'};
+const LBL={fwd:'Move forward',back:'Move back',left:'Move left',right:'Move right',sprint:'Sprint',interact:'Interact',district:'District view',map:'Map',profile:'Profile'};
+let BIND={...DEF},rebinding=null,TS=100,perfOn=new URLSearchParams(location.search).has('debug');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,down=new Set();
+try{const b=JSON.parse(localStorage.getItem('opp-binds'));if(b)for(const a in DEF)if(typeof b[a]==='string')BIND[a]=b[a]}catch(e){}
+try{TS=[100,125,150,200].includes(+localStorage.getItem('opp-ts'))?+localStorage.getItem('opp-ts'):100}catch(e){}
+const on=a=>down.has(BIND[a])||(ALT[a]&&down.has(ALT[a]));
+const nm=c=>c.replace(/^Key|^Digit/,'').replace('ShiftLeft','Shift').replace('Arrow','Arrow ');
+function applyTS(){document.documentElement.style.setProperty('--ts',TS/100)}
+function helpText(){$('help').textContent='Move: '+['fwd','left','back','right'].map(a=>nm(BIND[a])).join(' ')+' or arrows · Orbit: drag · '+nm(BIND.interact)+': interact · '+nm(BIND.district)+': district view'}
+function settings(){const rows=Object.keys(DEF).map(a=>`<div class="row"><span>${LBL[a]}</span><button data-bind="${a}" aria-label="Change key for ${LBL[a]}, now ${nm(BIND[a])}">${rebinding===a?'Press a key…':nm(BIND[a])}</button></div>`).join('');
+ open(`<h2>Settings</h2><p>Text size</p><div class="row">${[100,125,150,200].map(v=>`<button data-ts="${v}" aria-pressed="${v===TS}">${v}%</button>`).join('')}</div><p>Keys (arrow keys always move too; Esc cancels)</p>${rows}<div class="row"><button data-reset="1">Reset keys</button></div><p class="tag">Saved in this browser only.</p>`)}
+applyTS();helpText();$('perf').hidden=!perfOn;
+addEventListener('keydown',e=>{
+ if(rebinding){e.preventDefault();const a=rebinding;rebinding=null;
+  if(e.code!=='Escape'){const clash=Object.keys(BIND).find(x=>x!==a&&BIND[x]===e.code);
+   if(clash||Object.values(ALT).includes(e.code))toast(nm(e.code)+' is already used'+(clash?' by '+LBL[clash]:' for movement'));
+   else{BIND[a]=e.code;try{localStorage.setItem('opp-binds',JSON.stringify(BIND))}catch(x){}helpText();toast(LBL[a]+': '+nm(e.code))}}
+  settings();return}
+ if(e.code==='F3'){e.preventDefault();perfOn=!perfOn;$('perf').hidden=!perfOn;return}
+ if(!e.repeat){const c=e.code;
+  if(c===BIND.interact)interact();else if(c===BIND.district)district=!district;else if(c===BIND.map)open(mapHtml());else if(c===BIND.profile)open(profHtml());else if(c==='Escape')close()}
+ down.add(e.code)});
+addEventListener('keyup',e=>{down.delete(e.code)});
+addEventListener('blur',()=>down.clear());
 let drag=false;const cv=$('c');
 cv.addEventListener('pointerdown',e=>{drag=true;cv.setPointerCapture(e.pointerId)});
 cv.addEventListener('pointerup',()=>drag=false);
@@ -137,25 +172,27 @@ function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=i
 addEventListener('resize',resize);resize();
 function hit(x,z){const r=.5;if(Math.abs(x)>Z[S.zone].size/2-2||Math.abs(z)>Z[S.zone].size/2-2)return true;return cols.some(c=>x>c.x0-r&&x<c.x1+r&&z>c.z0-r&&z<c.z1+r)}
 const mm=$('mm').getContext('2d');
-function drawMap(){const s=130,k=s/Z[S.zone].size,z=Z[S.zone];mm.clearRect(0,0,s,s);
+function drawMap(){const s=130,k=s/Z[S.zone].size,z=Z[S.zone],o=z.size/2;mm.clearRect(0,0,s,s);
  mm.fillStyle='#1B2A3F';mm.fillRect(0,0,s,s);
- for(const m of marks){mm.fillStyle=m.id==='transit'?'#3DA5FF':'#8FA0B8';mm.fillRect((m.x0+z.size/2)*k,(m.z0+z.size/2)*k,Math.max(2,(m.x1-m.x0)*k),Math.max(2,(m.z1-m.z0)*k))}
- if(player){mm.fillStyle='#3DD6A5';mm.beginPath();mm.arc((player.position.x+z.size/2)*k,(player.position.z+z.size/2)*k,3,0,6.3);mm.fill()}}
+ for(const m of marks){const x=(m.x0+o)*k,y=(m.z0+o)*k,w=Math.max(2,(m.x1-m.x0)*k),h=Math.max(2,(m.z1-m.z0)*k);
+  if(m.id==='transit'){const cx=x+w/2,cy=y+h/2;mm.fillStyle='#3DA5FF';mm.beginPath();mm.moveTo(cx,cy-5);mm.lineTo(cx+5,cy);mm.lineTo(cx,cy+5);mm.lineTo(cx-5,cy);mm.closePath();mm.fill()}
+  else{mm.fillStyle='#8FA0B8';mm.fillRect(x,y,w,h)}}
+ if(player){const x=(player.position.x+o)*k,y=(player.position.z+o)*k,sn=Math.sin(player.rotation.y),cs=Math.cos(player.rotation.y);mm.fillStyle='#3DD6A5';mm.beginPath();mm.moveTo(x+6*sn,y+6*cs);mm.lineTo(x-3*sn+3*cs,y-3*cs-3*sn);mm.lineTo(x-3*sn-3*cs,y-3*cs+3*sn);mm.closePath();mm.fill()}}
 let last=performance.now(),acc=0,sv=0;
 build(S.zone);player.position.set(S.x,0,S.z);if(hit(S.x,S.z))player.position.set(0,0,12);cr();
 function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-last)/1000);last=now;
  const fx=-Math.sin(yaw),fz=-Math.cos(yaw),rx=Math.cos(yaw),rz=-Math.sin(yaw);
- const f=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0),r=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+ const f=(on('fwd')?1:0)-(on('back')?1:0),r=(on('right')?1:0)-(on('left')?1:0);
  let mx=fx*f+rx*r,mz=fz*f+rz*r;const l=Math.hypot(mx,mz);
- if(l>0){mx/=l;mz/=l;const p=player.position,sp=(keys.shift?11:7)*dt;
+ if(l>0){mx/=l;mz/=l;const p=player.position,sp=(on('sprint')?11:7)*dt;
   if(!hit(p.x+mx*sp,p.z))p.x+=mx*sp;if(!hit(p.x,p.z+mz*sp))p.z+=mz*sp;
-  player.rotation.y=Math.atan2(mx,mz);player.position.y=Math.abs(Math.sin(now*.012))*.08}
+  player.rotation.y=Math.atan2(mx,mz);player.position.y=RM?0:Math.abs(Math.sin(now*.012))*.08}
  const p=player.position,td=district?85:dist,tp=district?1.1:pitch;
- camera.userData.d=(camera.userData.d||td);camera.userData.d+=(td-camera.userData.d)*.08;
+ camera.userData.d=(camera.userData.d||td);camera.userData.d+=(td-camera.userData.d)*(RM?1:.08);
  const d=camera.userData.d;
  camera.position.set(p.x+Math.sin(yaw)*Math.cos(tp)*d,p.y+Math.sin(tp)*d+1,p.z+Math.cos(yaw)*Math.cos(tp)*d);camera.lookAt(p.x,1,p.z);
- const n=nearest();if(n!==near){near=n;const b=$('prompt');if(n){b.hidden=false;b.textContent='E · '+(n.id==='transit'?'Open map and transit':n.name)}else b.hidden=true}
- acc+=dt;sv+=dt;if(acc>.25){acc=0;drawMap();const gm=480+(now-t0)/2500;$('clk').textContent='Day '+(1+Math.floor(gm/1440))+' '+String(Math.floor(gm/60)%24).padStart(2,'0')+':'+String(Math.floor(gm%60)).padStart(2,'0')}
+ const n=nearest();if(n!==near){near=n;const b=$('prompt');if(n){b.hidden=false;b.textContent=nm(BIND.interact)+' · '+(n.id==='transit'?'Open map and transit':n.name);$('live').textContent='Near '+n.name+'. Press '+nm(BIND.interact)+' to interact.'}else{b.hidden=true;$('live').textContent=''}}
+ acc+=dt;sv+=dt;if(acc>.25){acc=0;drawMap();if(perfOn)$('perf').textContent=renderer.info.render.calls+' draw calls · '+renderer.info.render.triangles+' triangles · '+Math.round(1/Math.max(dt,.001))+' fps';const gm=480+(now-t0)/2500;$('clk').textContent='Day '+(1+Math.floor(gm/1440))+' '+String(Math.floor(gm/60)%24).padStart(2,'0')+':'+String(Math.floor(gm%60)).padStart(2,'0')}
  if(sv>3){sv=0;save()}
  renderer.render(scene,camera)}
 requestAnimationFrame(loop);
