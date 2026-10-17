@@ -1,10 +1,10 @@
 # OPP-DESIGN-D1B — Three-month survival runway
 **Blueprint sections:** §§2.1, 4.3–4.5, 7.2, 10.3, 12 (AT-01, AT-10)  
-**Status:** DEFAULT / CHANGE PROPOSAL — pending Rick's approval of detailed mechanics  
+**Status:** LOCKED INTENT (three-month initial no-income essentials runway; no automatic game-over at zero credits) / DEFAULT mechanics pending approval  
 **Design owner:** ChatGPT; engineering owner: Claude; canon approver: Rick
 
 ## Foreman's direction
-New graduates should start with **three months' worth of credits to survive**. This replaces the prior arbitrary 1,000/1,240 credit recommendation as the design basis. No numeric wallet value is approved until survival costs are specified and the gameplay loop is measured.
+New graduates should start with **three months' worth of credits to survive without income, so the game does not prematurely force failure**. This is a starting buffer, **not a three-month game lifespan, timer, or game-over deadline**. This replaces the prior arbitrary 1,000/1,240 credit recommendation as the design basis. No numeric wallet value is approved until survival costs are specified and the gameplay loop is measured.
 
 ## Created
 Define monthly essential expense budget **M** and starting liquid wallet **S = 3 × M**. All monetary units are virtual credits (cr). The time model and accounting period must be explicit: proposed **one month = 30 game days (provisional)**, so the nominal runway is 90 game days. The blueprint's **one game day = 60 real minutes** is itself DEFAULT and untested. Ninety consecutive game days would be 90 real hours at that rate; this is a major pacing risk and requires a time-compression decision before shipping.
@@ -31,6 +31,9 @@ Exclude optional training, business investment, premium housing, entertainment, 
 | **Three-month starting wallet S** | **4,680** |
 
 Illustrative daily rates assume a provisional 30-game-day month. These example figures are **not derived from a tested economy** and must not be hardcoded.
+
+## No premature ending — explicit rule
+**Zero credits is a hardship state, not a terminal game state.** Citizens retain access to free Career Development Office guidance, viable zero-cost work pathways, protected emergency shelter, basic recovery, and essential access. Debt delinquency and rent arrears may carry proportionate consequences, but cannot make further gameplay impossible. The economic runway is a minimum initial cushion for essentials, not a timer to death, eviction, or forced reset. The citizen can continue indefinitely by earning and managing resources. Details of emergency services are DEFAULT until approved.
 
 ## First-loop testing
 Run the same graduation → free Career Development Office → CitizenMail application → commute → eligible work → verified wage → food/recovery → next choice loop with wallet `S=3M`. Measure:
@@ -63,4 +66,4 @@ Starting with too much spendable money can make entry-level wages feel inconsequ
 - **AT-RUNWAY-05:** Time-compression and affordability simulations report the number of real minutes needed for one economic month.
 
 ## Approval gate
-Rick's statement establishes the **three-month survival-runway target**. Detailed basket contents, 30-day-month assumption, inclusion of loan service, and resulting wallet amounts remain DEFAULT proposals pending approval. Do not overwrite economy constants or the canonical blueprint yet.
+Rick's clarification establishes the **three-month no-income essentials buffer and no automatic game-over on financial exhaustion** as the design intent. Detailed basket contents, 30-day-month assumption, inclusion of loan service, and resulting wallet amounts remain DEFAULT proposals pending approval. Do not overwrite economy constants or the canonical blueprint yet.
