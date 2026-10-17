@@ -8,6 +8,7 @@ window.addEventListener('error',function(e){const hint=document.getElementById('
 window.addEventListener('unhandledrejection',function(e){const hint=document.getElementById('hint');if(hint)hint.textContent='Startup error: '+(e.reason?.message||String(e.reason));});
 setTimeout(function(){if(!window.__OPPORTUNITY_READY__){const hint=document.getElementById('hint');if(hint&&hint.textContent.indexOf('Startup error')<0)hint.textContent='Game startup timed out. Check network access or reload.';}},9000);
 </script>
+<script type="module" src="./src/fallback-world.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script type="module">
 const THREE=window.THREE;
