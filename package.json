@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "start": "npx --yes http-server . -p 8080 -c-1"
+    "start": "npx --yes http-server . -p 8080 -c-1",
+    "test:browser": "playwright test"
   },
-  "description": "Opportunity 3D economic MMORPG browser prototype"
+  "description": "Opportunity 3D economic MMORPG browser prototype",
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
 }
