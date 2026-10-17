@@ -1,0 +1,613 @@
+{
+  "document": "WO-04",
+  "version": "draft-v0",
+  "status": "DEFAULT",
+  "approved": false,
+  "dependency": "WO-03 not yet approved by Rick; all calculations illustrative and must not be wired into clients",
+  "policy": {
+    "currency": "cr",
+    "time": "game_day",
+    "daysPerProtectedMonth": {
+      "value": 30,
+      "unit": "game_days",
+      "provisional": true
+    },
+    "protectedMonths": {
+      "value": 3,
+      "unit": "game_months",
+      "provisional": true
+    },
+    "startingCreditsResolution": "Replace 1000/1240 with 3*origin.monthlyBasicNeeds; separate origin savings. Values not approved.",
+    "dailyEssentialSpend": "origin.monthlyBasicNeeds/30, includes food, routine local transport, housing, utilities, recovery allowance; no double billing",
+    "debtGrace": "No mandatory debt payments/interest during protected onboarding; exact duration pending approval",
+    "zeroBalance": "Recoverable hardship; never automatic game over",
+    "realMoney": "none"
+  },
+  "actions": [
+    {
+      "id": "citizen_start_protected",
+      "kind": "faucet",
+      "expectedPace": {
+        "value": 4680,
+        "unit": "one_time",
+        "provisional": true
+      },
+      "note": "Protected 90-day essentials grant; origin dependent 3960–4680 cr, not daily recurring"
+    },
+    {
+      "id": "origin_savings",
+      "kind": "initial_endowment",
+      "expectedPace": {
+        "value": 900,
+        "unit": "one_time",
+        "provisional": true
+      },
+      "note": "Origin-specific savings 250–900 cr; record once, never also grant"
+    },
+    {
+      "id": "npc_paid_shift",
+      "kind": "faucet",
+      "expectedPace": {
+        "value": 120,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Only after actual paid work; cap 1 shift/day"
+    },
+    {
+      "id": "npc_rural_task",
+      "kind": "faucet",
+      "expectedPace": {
+        "value": 70,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Alternative paid task, not simultaneously assumed with shift"
+    },
+    {
+      "id": "npc_quest_stipend",
+      "kind": "faucet",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Disabled until WO-04 registration and approval; current 90-cr quest payout is inconsistent"
+    },
+    {
+      "id": "player_employer_wage",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Variable funded from employer balance; no minting"
+    },
+    {
+      "id": "npc_repair_contract",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 60,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Only after funded escrow and material/competence checks; 90-cr root payout conflict"
+    },
+    {
+      "id": "player_service_sale",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Variable buyer-funded, fees separately classified"
+    },
+    {
+      "id": "npc_essential_food",
+      "kind": "sink",
+      "expectedPace": {
+        "value": 24,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Included in essentials basket; do not charge twice"
+    },
+    {
+      "id": "npc_local_transit",
+      "kind": "sink",
+      "expectedPace": {
+        "value": 12,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "One trip on expected play day, included in essentials basket"
+    },
+    {
+      "id": "npc_cross_domain_transit",
+      "kind": "sink",
+      "expectedPace": {
+        "value": 20,
+        "unit": "cr/trip",
+        "provisional": true
+      },
+      "note": "Variable; not assumed daily; separately counted if not covered by allowance"
+    },
+    {
+      "id": "npc_rent",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 120,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      },
+      "note": "If NPC landlord destroys funds, reclassify sink; included in essentials basket"
+    },
+    {
+      "id": "npc_rest",
+      "kind": "sink",
+      "expectedPace": {
+        "value": 20,
+        "unit": "cr/use",
+        "provisional": true
+      },
+      "note": "Optional paid rest, not mandatory daily"
+    },
+    {
+      "id": "public_recovery",
+      "kind": "non_monetary",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "No credit minting, one recovery/day"
+    },
+    {
+      "id": "npc_student_loan_payment",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 20,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      },
+      "note": "Only when grace period ends, loan liability reduces"
+    },
+    {
+      "id": "npc_loan_interest",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Disabled in protected onboarding grace; future terms separately approved"
+    },
+    {
+      "id": "npc_material_purchase",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Variable funded purchase; if NPC seller removes credits classify sink"
+    },
+    {
+      "id": "npc_equipment_repair",
+      "kind": "sink",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Variable, not mandatory in protected basket"
+    },
+    {
+      "id": "player_to_player_sale",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Buyer debit equals seller credit"
+    },
+    {
+      "id": "player_gift",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "No currency creation"
+    },
+    {
+      "id": "civic_escrow_contribution",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Variable opt-in 10–50 cr; escrow not sink"
+    },
+    {
+      "id": "civic_escrow_refund",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Return unspent funds, not new faucet"
+    },
+    {
+      "id": "escrow_release",
+      "kind": "transfer",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Release escrow to recipient; idempotent"
+    },
+    {
+      "id": "transaction_reversal",
+      "kind": "reversal",
+      "expectedPace": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "note": "Compensating entries only; no new net credits"
+    }
+  ],
+  "goods": [
+    {
+      "id": "bread",
+      "base": {
+        "value": 8,
+        "unit": "cr/loaf",
+        "provisional": true
+      },
+      "floor": {
+        "value": 6,
+        "unit": "cr/loaf",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 12,
+        "unit": "cr/loaf",
+        "provisional": true
+      }
+    },
+    {
+      "id": "essential_food_bundle",
+      "base": {
+        "value": 24,
+        "unit": "cr/bundle",
+        "provisional": true
+      },
+      "floor": {
+        "value": 20,
+        "unit": "cr/bundle",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 30,
+        "unit": "cr/bundle",
+        "provisional": true
+      }
+    },
+    {
+      "id": "water_basic",
+      "base": {
+        "value": 4,
+        "unit": "cr/day",
+        "provisional": true
+      },
+      "floor": {
+        "value": 2,
+        "unit": "cr/day",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 6,
+        "unit": "cr/day",
+        "provisional": true
+      }
+    },
+    {
+      "id": "shared_housing",
+      "base": {
+        "value": 120,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      },
+      "floor": {
+        "value": 100,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 180,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      }
+    },
+    {
+      "id": "local_transit",
+      "base": {
+        "value": 12,
+        "unit": "cr/trip",
+        "provisional": true
+      },
+      "floor": {
+        "value": 8,
+        "unit": "cr/trip",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 16,
+        "unit": "cr/trip",
+        "provisional": true
+      }
+    },
+    {
+      "id": "cross_domain_transit",
+      "base": {
+        "value": 20,
+        "unit": "cr/trip",
+        "provisional": true
+      },
+      "floor": {
+        "value": 15,
+        "unit": "cr/trip",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 28,
+        "unit": "cr/trip",
+        "provisional": true
+      }
+    },
+    {
+      "id": "public_recovery",
+      "base": {
+        "value": 0,
+        "unit": "cr/use",
+        "provisional": true
+      },
+      "floor": {
+        "value": 0,
+        "unit": "cr/use",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 0,
+        "unit": "cr/use",
+        "provisional": true
+      }
+    },
+    {
+      "id": "adhesive",
+      "base": {
+        "value": 8,
+        "unit": "cr/unit",
+        "provisional": true
+      },
+      "floor": {
+        "value": 5,
+        "unit": "cr/unit",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 12,
+        "unit": "cr/unit",
+        "provisional": true
+      }
+    },
+    {
+      "id": "thread",
+      "base": {
+        "value": 5,
+        "unit": "cr/unit",
+        "provisional": true
+      },
+      "floor": {
+        "value": 3,
+        "unit": "cr/unit",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 8,
+        "unit": "cr/unit",
+        "provisional": true
+      }
+    },
+    {
+      "id": "shoe_sole_patch",
+      "base": {
+        "value": 15,
+        "unit": "cr/unit",
+        "provisional": true
+      },
+      "floor": {
+        "value": 10,
+        "unit": "cr/unit",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 22,
+        "unit": "cr/unit",
+        "provisional": true
+      }
+    },
+    {
+      "id": "basic_tool_access",
+      "base": {
+        "value": 0,
+        "unit": "cr/first_quest",
+        "provisional": true
+      },
+      "floor": {
+        "value": 0,
+        "unit": "cr/first_quest",
+        "provisional": true
+      },
+      "ceiling": {
+        "value": 0,
+        "unit": "cr/first_quest",
+        "provisional": true
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "origin_fine_arts_private",
+      "openingGrant": {
+        "value": 4680,
+        "unit": "cr",
+        "provisional": true
+      },
+      "originSavings": {
+        "value": 900,
+        "unit": "cr",
+        "provisional": true
+      },
+      "openingLiquid": {
+        "value": 5580,
+        "unit": "cr",
+        "provisional": true
+      },
+      "dailyEssentials": {
+        "value": 52,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "weeklyEssentials": {
+        "value": 364,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      },
+      "dailyIncome": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "closingLiquid": {
+        "value": 5216,
+        "unit": "cr",
+        "provisional": true
+      },
+      "daysCoveredFromGrant": {
+        "value": 90,
+        "unit": "game_days",
+        "provisional": true
+      },
+      "daysCoveredFromTotal": {
+        "value": 107.3,
+        "unit": "game_days",
+        "provisional": true
+      },
+      "note": "No paid work, no interest or debt payment during onboarding grace; all necessities included in 52 cr/day."
+    },
+    {
+      "id": "origin_agriculture_public",
+      "openingGrant": {
+        "value": 3960,
+        "unit": "cr",
+        "provisional": true
+      },
+      "originSavings": {
+        "value": 250,
+        "unit": "cr",
+        "provisional": true
+      },
+      "openingLiquid": {
+        "value": 4210,
+        "unit": "cr",
+        "provisional": true
+      },
+      "dailyEssentials": {
+        "value": 44,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "weeklyEssentials": {
+        "value": 308,
+        "unit": "cr/7_game_days",
+        "provisional": true
+      },
+      "dailyIncome": {
+        "value": 0,
+        "unit": "cr/game_day",
+        "provisional": true
+      },
+      "closingLiquid": {
+        "value": 3902,
+        "unit": "cr",
+        "provisional": true
+      },
+      "daysCoveredFromGrant": {
+        "value": 90,
+        "unit": "game_days",
+        "provisional": true
+      },
+      "daysCoveredFromTotal": {
+        "value": 95.7,
+        "unit": "game_days",
+        "provisional": true
+      },
+      "note": "No paid work; housing family contribution included in 44 cr/day; optional spending excluded."
+    }
+  ],
+  "breakageIndicators": [
+    {
+      "id": "wealth_doubling",
+      "threshold": {
+        "value": 2,
+        "unit": "ratio_7_game_days",
+        "provisional": true
+      },
+      "response": "Investigate faucet/duplication"
+    },
+    {
+      "id": "starter_runway_shortfall",
+      "threshold": {
+        "value": 90,
+        "unit": "game_days",
+        "provisional": true
+      },
+      "comparison": "no-income essentials runway less than threshold",
+      "response": "Block release, rebalance essentials and grant"
+    },
+    {
+      "id": "negative_balance",
+      "threshold": {
+        "value": 0,
+        "unit": "cr",
+        "provisional": true
+      },
+      "comparison": "any unauthorized negative available balance",
+      "response": "Freeze offending action and reconcile ledger"
+    },
+    {
+      "id": "faucet_sink_imbalance",
+      "threshold": {
+        "value": 1.5,
+        "unit": "ratio_7_game_days",
+        "provisional": true
+      },
+      "comparison": "NPC faucets / sinks exceeds threshold across cohort",
+      "response": "Investigate inflow source and throttles, not punitive retroactive confiscation"
+    }
+  ],
+  "reversal": {
+    "rule": "Append compensating debit and credit with original transaction reference; never delete ledger history; require same amount and currency; idempotency key reversal:<originalTxId>; escrow reversals preserve double-entry balance; if spent, create bounded receivable with support review instead of negative wallet.",
+    "manualReview": true
+  }
+}
