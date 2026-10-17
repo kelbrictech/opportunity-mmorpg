@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Opportunity: Phase 1 slice</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#101826;--slate:#1B2A3F;--blue:#3DA5FF;--teal:#3DD6A5;--paper:#EAF0F7;--muted:#8FA0B8;color-scheme:dark}
+html,body{margin:0;height:100%;background:#101826;color:var(--paper);font:14px/1.5 'IBM Plex Sans',system-ui,sans-serif;overflow:hidden}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+h1,h2{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;margin:0}
+button{font:inherit;color:var(--paper);background:#24385299;border:1px solid #3a5272;border-radius:6px;padding:6px 10px;cursor:pointer}
+button:hover{background:#2c4466}
+button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:12px;padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px;background:#101826dd;border-bottom:1px solid #2a3d57}
+#bar h1{font-size:16px}
+#bar .r{color:var(--teal);font-weight:500;white-space:nowrap}
+#drawer{position:absolute;top:calc(44px + env(safe-area-inset-top,0px));right:0;bottom:0;width:min(300px,100%);box-sizing:border-box;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:#1B2A3Fe6;border-left:1px solid #2a3d57;overflow:auto;transform:translateX(100%);transition:transform .18s}
+#drawer.open{transform:none}
+#tabs{position:absolute;top:calc(52px + env(safe-area-inset-top,0px));right:8px;display:flex;gap:6px;z-index:2}
+#drawer.open~#tabs{right:calc(min(300px,100%) + 8px)}
+#drawer h2{font-size:17px;margin:34px 0 6px}
+#drawer p{margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:4px;background:#101826;color:var(--muted);border:1px solid #2a3d57}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:6px 0}
+#prompt{position:absolute;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--blue);color:#04202F;border:0;font-weight:500;padding:8px 14px}
+#prompt:hover{background:#6bbcff}
+#toast{position:absolute;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#101826ee;border:1px solid #2a3d57;padding:6px 12px;border-radius:6px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:80%;text-align:center}
+#help{position:absolute;left:14px;top:calc(56px + env(safe-area-inset-top,0px));color:#EAF0F7cc;font-size:12px;background:#10182688;padding:4px 8px;border-radius:6px}
+#mm{display:block;margin-top:10px;background:#101826;border:1px solid #2a3d57;border-radius:6px}
+#err{position:absolute;inset:60px 20px auto;color:#ffb4a8}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="3D game world"></canvas>
+<header id="bar"><h1 id="zn">Residential Area</h1><div class="r"><span id="cr">1,000 cr</span> · <span id="clk">Day 1 08:00</span></div></header>
+<div id="help">Move: WASD or arrows · Orbit: drag · E: interact · V: district view</div>
+<aside id="drawer" aria-live="polite"><div id="panel"></div><canvas id="mm" width="130" height="130" aria-label="Minimap"></canvas></aside>
+<div id="tabs"><button id="tp" aria-controls="drawer">Profile</button><button id="tm">Map</button></div>
+<button id="prompt" hidden></button>
+<div id="toast" role="status"></div>
+<div id="err"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const FARE={residential:{city:12,rural:18},city:{residential:12,rural:20},rural:{residential:18,city:20}};
+const Z={
+residential:{name:'Residential Area',size:300,sky:0xbcd3e6,ground:0x86a374,L:[
+['apts','Apartments',-60,-60,30,20,28,0xb7a38c,'Housing block. Starting housing and rent are not built yet.'],
+['bakery','Bakery',50,-50,14,12,7,0xd9a066,'Neighborhood bakery for the first production chain. Production is not built yet.'],
+['repair','Repair shop',90,-30,16,12,7,0x9aa7b5,'Home of the first skill slice, shoe repair. Lessons and contracts are not built yet.'],
+['clinic','Clinic',-70,50,20,16,10,0xe4ecf3,'Healthcare access. Health and recovery are not built yet.'],
+['store','Store',30,60,18,14,8,0xc98b8b,'Local retail. Buying and inventory are not built yet.'],
+['park','Park',-20,-110,40,40,0.3,0x5f9a5a,'Open green space. Walk through it.'],
+['transit','Transit stop',14,14,6,4,4,0x3DA5FF,'']]},
+city:{name:'Big City',size:400,sky:0xa9bccf,ground:0x7d8793,L:[
+['hall','Town Hall',0,-70,50,30,22,0xcfd8e3,'Civic Square. Free services for every citizen. Civic projects are not built yet.'],
+['career','Career Development Office',46,-70,20,18,10,0x9fc3e0,'Free career counselling for every citizen. Counselling and saved action plans are not built yet (Phase 2).'],
+['jobs','Employment Center',-80,-60,28,22,14,0xa7b4c4,'Job board and applications. Not built yet (Phase 2).'],
+['uni','University',110,-80,44,34,18,0xb59b84,'Higher education. Courses are not built yet.'],
+['bank','Bank',-100,60,26,22,24,0x8fb0cf,'Accounts and loans. The ledger is not built yet.'],
+['off1','Offices',80,70,24,24,46,0x7fa6c9,'Private employers. Not built yet.'],
+['off2','Offices',130,30,22,22,34,0x93b3cf,'Private employers. Not built yet.'],
+['transit','Transit stop',14,14,6,4,4,0x3DA5FF,'']]},
+rural:{name:'Rural Region',size:400,sky:0xc6dbe8,ground:0x9bb36b,L:[
+['farm','Farm',-90,-70,30,22,10,0xb5503c,'Wheat farm, the start of the first production chain. Farming is not built yet.'],
+['field','Wheat field',-90,-120,60,36,0.2,0xd8b94a,'Planted wheat. Crops are not built yet.'],
+['mill','Flour mill',80,-70,24,24,20,0xd8d2c4,'Turns wheat into flour. Production is not built yet.'],
+['market','Rural market',-80,70,26,18,8,0xc48a52,'Sells local goods. Trading is not built yet.'],
+['shop','Workshop',70,60,22,18,10,0x8a8f96,'Repairs and small manufacturing. Not built yet.'],
+['ware','Warehouse',130,-10,30,24,12,0x7c8b99,'Storage and logistics. Not built yet.'],
+['transit','Transit stop',14,14,6,4,4,0x3DA5FF,'']]}};
+const S={zone:'residential',credits:1000,x:0,z:12};
+try{const j=JSON.parse(localStorage.getItem('opp-phase1'));if(j&&Z[j.zone]){Object.assign(S,j)}}catch(e){}
+function save(){try{localStorage.setItem('opp-phase1',JSON.stringify({zone:S.zone,credits:S.credits,x:player?player.position.x:S.x,z:player?player.position.z:S.z}))}catch(e){}}
+let renderer,scene,camera,world,player,cols=[],marks=[],near=null,yaw=0,pitch=.38,dist=12,district=false,t0=performance.now();
+const keys={};
+try{renderer=new THREE.WebGLRenderer({canvas:$('c'),antialias:true});}catch(e){$('err').textContent='This browser couldn’t start WebGL, so the 3D world can’t load.';throw e}
+scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(60,1,.1,900);
+scene.add(new THREE.HemisphereLight(0xffffff,0x6a7a66,.95));
+const sun=new THREE.DirectionalLight(0xffffff,.8);sun.position.set(80,140,60);scene.add(sun);
+player=new THREE.Group();
+const bm=new THREE.MeshLambertMaterial({color:0x3DA5FF});
+const body=new THREE.Mesh(new THREE.CylinderGeometry(.35,.4,1.1,12),bm);body.position.y=.65;
+const head=new THREE.Mesh(new THREE.SphereGeometry(.28,12,10),new THREE.MeshLambertMaterial({color:0xEAF0F7}));head.position.y=1.5;
+const nose=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.2),new THREE.MeshLambertMaterial({color:0x101826}));nose.position.set(0,1.5,.28);
+player.add(body,head,nose);scene.add(player);
+function label(t,h){const c=document.createElement('canvas');c.width=320;c.height=64;const g=c.getContext('2d');g.fillStyle='rgba(16,24,38,.85)';g.fillRect(0,0,320,64);g.fillStyle='#EAF0F7';g.font='500 26px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(t,160,33,300);
+const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c)}));s.scale.set(15,3,1);s.position.y=h+4;return s}
+function rng(a){return()=>{a=(a*1664525+1013904223)%4294967296;return a/4294967296}}
+function build(k){
+ if(world)scene.remove(world);world=new THREE.Group();cols=[];marks=[];const z=Z[k],h=z.size/2;
+ scene.background=new THREE.Color(z.sky);scene.fog=new THREE.Fog(z.sky,90,380);
+ const pl=(w,d,c,y)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshLambertMaterial({color:c}));m.rotation.x=-Math.PI/2;m.position.y=y;return m};
+ world.add(pl(z.size,z.size,z.ground,0),pl(8,z.size,0x4a5360,.03),pl(z.size,8,0x4a5360,.04));
+ z.L.forEach(([id,name,x,zz,w,d,ht,col,info])=>{
+  const flat=ht<1;
+  const b=new THREE.Mesh(new THREE.BoxGeometry(w,ht,d),new THREE.MeshLambertMaterial({color:col}));b.position.set(x,ht/2+(flat?.05:0),zz);world.add(b);
+  if(!flat){const r=new THREE.Mesh(new THREE.BoxGeometry(w+1,.6,d+1),new THREE.MeshLambertMaterial({color:0x2c3646}));r.position.set(x,ht+.3,zz);world.add(r);
+   const s=label(name,ht);s.position.x=x;s.position.z=zz;world.add(s);cols.push({x0:x-w/2,x1:x+w/2,z0:zz-d/2,z1:zz+d/2})}
+  marks.push({id,name,info,x0:x-w/2,x1:x+w/2,z0:zz-d/2,z1:zz+d/2,flat});
+ });
+ const R=rng(k.length*7919),n=k==='rural'?90:55,tm=new THREE.MeshLambertMaterial({color:0x2f6b43}),km=new THREE.MeshLambertMaterial({color:0x6b4a2f});
+ for(let i=0;i<n;i++){const x=(R()-.5)*(z.size-10),zz=(R()-.5)*(z.size-10);
+  if(Math.abs(x)<8||Math.abs(zz)<8||z.L.some(l=>x>l[2]-l[4]/2-3&&x<l[2]+l[4]/2+3&&zz>l[3]-l[5]/2-3&&zz<l[3]+l[5]/2+3))continue;
+  const t=new THREE.Mesh(new THREE.ConeGeometry(2,5,8),tm);t.position.set(x,3.5,zz);const tr=new THREE.Mesh(new THREE.CylinderGeometry(.35,.35,1.2),km);tr.position.set(x,.6,zz);world.add(t,tr)}
+ scene.add(world);$('zn').textContent=z.name;S.zone=k;drawMap();
+}
+function nearest(){let best=null,bd=4.5;const p=player.position;
+ for(const m of marks){const dx=Math.max(m.x0-p.x,0,p.x-m.x1),dz=Math.max(m.z0-p.z,0,p.z-m.z1),d=Math.hypot(dx,dz);if(d<bd){bd=d;best=m}}return best}
+function toast(t){const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.opacity=0,2600)}
+function open(html){$('panel').innerHTML=html;$('drawer').classList.add('open')}
+function close(){$('drawer').classList.remove('open')}
+function cr(){$('cr').textContent=S.credits.toLocaleString()+' cr'}
+function mapHtml(){const f=FARE[S.zone];return '<h2>Map and transit</h2><p>Travel keeps your credits. Fares are provisional balance values, not final prices.</p>'+Object.keys(Z).map(k=>k===S.zone?`<div class="row"><span>${Z[k].name}</span><span class="tag">You are here</span></div>`:`<div class="row"><span>${Z[k].name}<br><span class="tag">${f[k]} cr</span></span><button data-go="${k}">Travel</button></div>`).join('')+'<p class="tag">Travel works at a transit stop.</p>'}
+function profHtml(){return `<h2>Citizen profile</h2><div class="row"><span>Status</span><span>Fresh graduate</span></div><div class="row"><span>Credits</span><span>${S.credits.toLocaleString()}</span></div><div class="row"><span>Location</span><span>${Z[S.zone].name}</span></div><p class="tag">Degree, institution, loans and skills aren’t built yet.</p><p class="tag">Credits are stored in this browser only, not on a server.</p>`}
+function interact(){const m=nearest();if(!m)return;
+ if(m.id==='transit'){open(mapHtml());return}
+ open(`<h2>${m.name}</h2><p>${m.info}</p><span class="tag">Prototype scenery</span>`)}
+function go(k){
+ if(!player||k===S.zone||!Z[k])return;
+ const m=nearest();if(!m||m.id!=='transit'){toast('Walk to a transit stop to travel.');return}
+ const f=FARE[S.zone][k];if(S.credits<f){toast('You need '+f+' cr for this trip.');return}
+ S.credits-=f;cr();build(k);player.position.set(0,0,12);S.x=0;S.z=12;save();toast('Arrived in '+Z[k].name+'. Fare: '+f+' cr');open(mapHtml())}
+$('drawer').addEventListener('click',e=>{const g=e.target.dataset&&e.target.dataset.go;if(g)go(g)});
+$('tp').onclick=()=>open(profHtml());$('tm').onclick=()=>open(mapHtml());
+$('prompt').onclick=interact;
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;if(k==='e')interact();else if(k==='v')district=!district;else if(k==='m')open(mapHtml());else if(k==='p')open(profHtml());else if(k==='escape')close()});
+addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+let drag=false;const cv=$('c');
+cv.addEventListener('pointerdown',e=>{drag=true;cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointerup',()=>drag=false);
+cv.addEventListener('pointermove',e=>{if(!drag)return;yaw-=e.movementX*.006;if(!district)pitch=Math.min(1.2,Math.max(.1,pitch+e.movementY*.005))});
+cv.addEventListener('wheel',e=>{dist=Math.min(22,Math.max(6,dist+e.deltaY*.01))},{passive:true});
+function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+function hit(x,z){const r=.5;if(Math.abs(x)>Z[S.zone].size/2-2||Math.abs(z)>Z[S.zone].size/2-2)return true;return cols.some(c=>x>c.x0-r&&x<c.x1+r&&z>c.z0-r&&z<c.z1+r)}
+const mm=$('mm').getContext('2d');
+function drawMap(){const s=130,k=s/Z[S.zone].size,z=Z[S.zone];mm.clearRect(0,0,s,s);
+ mm.fillStyle='#1B2A3F';mm.fillRect(0,0,s,s);
+ for(const m of marks){mm.fillStyle=m.id==='transit'?'#3DA5FF':'#8FA0B8';mm.fillRect((m.x0+z.size/2)*k,(m.z0+z.size/2)*k,Math.max(2,(m.x1-m.x0)*k),Math.max(2,(m.z1-m.z0)*k))}
+ if(player){mm.fillStyle='#3DD6A5';mm.beginPath();mm.arc((player.position.x+z.size/2)*k,(player.position.z+z.size/2)*k,3,0,6.3);mm.fill()}}
+let last=performance.now(),acc=0,sv=0;
+build(S.zone);player.position.set(S.x,0,S.z);if(hit(S.x,S.z))player.position.set(0,0,12);cr();
+function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-last)/1000);last=now;
+ const fx=-Math.sin(yaw),fz=-Math.cos(yaw),rx=Math.cos(yaw),rz=-Math.sin(yaw);
+ const f=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0),r=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+ let mx=fx*f+rx*r,mz=fz*f+rz*r;const l=Math.hypot(mx,mz);
+ if(l>0){mx/=l;mz/=l;const p=player.position,sp=(keys.shift?11:7)*dt;
+  if(!hit(p.x+mx*sp,p.z))p.x+=mx*sp;if(!hit(p.x,p.z+mz*sp))p.z+=mz*sp;
+  player.rotation.y=Math.atan2(mx,mz);player.position.y=Math.abs(Math.sin(now*.012))*.08}
+ const p=player.position,td=district?85:dist,tp=district?1.1:pitch;
+ camera.userData.d=(camera.userData.d||td);camera.userData.d+=(td-camera.userData.d)*.08;
+ const d=camera.userData.d;
+ camera.position.set(p.x+Math.sin(yaw)*Math.cos(tp)*d,p.y+Math.sin(tp)*d+1,p.z+Math.cos(yaw)*Math.cos(tp)*d);camera.lookAt(p.x,1,p.z);
+ const n=nearest();if(n!==near){near=n;const b=$('prompt');if(n){b.hidden=false;b.textContent='E · '+(n.id==='transit'?'Open map and transit':n.name)}else b.hidden=true}
+ acc+=dt;sv+=dt;if(acc>.25){acc=0;drawMap();const gm=480+(now-t0)/2500;$('clk').textContent='Day '+(1+Math.floor(gm/1440))+' '+String(Math.floor(gm/60)%24).padStart(2,'0')+':'+String(Math.floor(gm%60)).padStart(2,'0')}
+ if(sv>3){sv=0;save()}
+ renderer.render(scene,camera)}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
