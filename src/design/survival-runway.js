@@ -18,7 +18,7 @@ export function calculateRunway({monthlyHousing, monthlyFood, monthlyTransport, 
 }
 export function simulateNoIncome({startingCredits,dailyCosts,days}) {
   nonnegative(startingCredits,'startingCredits');nonnegative(days,'days');
-  if(!Array.isArray(dailyCosts)) throw new TypeError('dailyCosts must be an array');
+  if(!Array.isArray(dailyCosts)||dailyCosts.length===0) throw new TypeError('dailyCosts must be a nonempty array');
   let balance=startingCredits,firstUnaffordableDay=null;
   const balances=[];
   for(let day=1;day<=days;day++){
