@@ -1,0 +1,157 @@
+{
+  "id": "WO-07",
+  "status": "DEFAULT",
+  "approved": false,
+  "source": "docs/MASTER_BLUEPRINT.md §3.1",
+  "originalGrid": [
+    [
+      "Graduation Center",
+      "Housing Block",
+      "Employment Office"
+    ],
+    [
+      "Retail Stores",
+      "Civic Square",
+      "Bakery Shop"
+    ],
+    [
+      "Park",
+      "Logistics Depot",
+      "Flour Mill"
+    ]
+  ],
+  "proposal": "Preserve the 3x3 diagram as a historical Founders' District heritage map, not a new fourth playable domain. Place each piece into one of three existing domains; preserve the original row/column metadata for museum map, lore and navigation.",
+  "mapping": [
+    {
+      "cell": 1,
+      "row": 1,
+      "column": 1,
+      "original": "Graduation Center",
+      "destination": "Big City",
+      "landmark": "University precinct",
+      "rationale": "A civic graduation/orientation hub near university; not a mandatory tutorial gate",
+      "decision": "retained_relocated",
+      "notes": "Degree story starting point and CitizenMail onboarding; graduates from all origins can visit",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 2,
+      "row": 1,
+      "column": 2,
+      "original": "Housing Block",
+      "destination": "Residential Area",
+      "landmark": "Apartments",
+      "rationale": "Starter housing and home-services economy",
+      "decision": "retained_relocated",
+      "notes": "Origin-specific housing, rent and recovery; all citizens can relocate",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 3,
+      "row": 1,
+      "column": 3,
+      "original": "Employment Office",
+      "destination": "Big City",
+      "landmark": "Employment Center",
+      "rationale": "Job discovery and application workflows",
+      "decision": "retained_merged",
+      "notes": "Distinct from free Career Development Office; vacancies and applications use CitizenMail",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 4,
+      "row": 2,
+      "column": 1,
+      "original": "Retail Stores",
+      "destination": "Residential Area",
+      "landmark": "Store and neighborhood shops",
+      "rationale": "Basic needs and item purchases",
+      "decision": "retained_relocated",
+      "notes": "NPC stock and player businesses; transactions use ledger",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 5,
+      "row": 2,
+      "column": 2,
+      "original": "Civic Square",
+      "destination": "Big City",
+      "landmark": "Town Hall plaza",
+      "rationale": "Public gathering and civic projects",
+      "decision": "retained_merged",
+      "notes": "Town Hall contains free Career Development Office; square remains traversable public space",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 6,
+      "row": 2,
+      "column": 3,
+      "original": "Bakery Shop",
+      "destination": "Residential Area",
+      "landmark": "Bakery",
+      "rationale": "Bread production, employment and customer trade",
+      "decision": "retained_relocated",
+      "notes": "Wheat→flour→bread supply chain; player work requires actual inputs",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 7,
+      "row": 3,
+      "column": 1,
+      "original": "Park",
+      "destination": "Residential Area",
+      "landmark": "Park",
+      "rationale": "Accessible public recovery, meeting and navigation landmark",
+      "decision": "retained_relocated",
+      "notes": "No paid entry; inclusive recovery options",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 8,
+      "row": 3,
+      "column": 2,
+      "original": "Logistics Depot",
+      "destination": "Rural Region",
+      "landmark": "Warehouse and transit freight yard",
+      "rationale": "Regional storage, dispatch and delivery",
+      "decision": "retained_merged",
+      "notes": "Link rural producer to city/residential customers; freight and passenger transit are separate services",
+      "status": "DEFAULT",
+      "approved": false
+    },
+    {
+      "cell": 9,
+      "row": 3,
+      "column": 3,
+      "original": "Flour Mill",
+      "destination": "Rural Region",
+      "landmark": "Mill",
+      "rationale": "Convert wheat into flour and employ citizens",
+      "decision": "retained_relocated",
+      "notes": "Feeds residential bakery through logistics and stock constraints",
+      "status": "DEFAULT",
+      "approved": false
+    }
+  ],
+  "counts": {
+    "total": 9,
+    "retained": 9,
+    "retired": 0,
+    "bigCity": 3,
+    "residential": 4,
+    "rural": 2
+  },
+  "acceptance": {
+    "allNineMapped": true,
+    "retiredWithReason": true,
+    "threeDomainsOnly": true,
+    "blueprintUnmodified": true
+  }
+}
