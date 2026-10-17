@@ -36,7 +36,7 @@
     },
     {
       "id": "origin_savings",
-      "kind": "initial_endowment",
+      "kind": "faucet",
       "expectedPace": {
         "value": 900,
         "unit": "one_time",
@@ -256,13 +256,13 @@
     },
     {
       "id": "transaction_reversal",
-      "kind": "reversal",
+      "kind": "transfer",
       "expectedPace": {
         "value": 0,
         "unit": "cr/game_day",
         "provisional": true
       },
-      "note": "Compensating entries only; no new net credits"
+      "note": "Compensating entries only; no new net credits; reversal may unwind an earlier faucet/sink as a compensating correction"
     }
   ],
   "goods": [
