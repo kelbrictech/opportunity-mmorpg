@@ -1,0 +1,273 @@
+{
+  "id": "WO-09",
+  "status": "PREPRODUCTION_ONLY",
+  "approved": false,
+  "dependencies": {
+    "S0": "PENDING",
+    "storyPremise": "PENDING",
+    "S1CharacterSheets": "NOT_STARTED",
+    "S2Script": "NOT_STARTED",
+    "S3Art": "BLOCKED",
+    "S4Playable": "BLOCKED"
+  },
+  "designLanguage": {
+    "name": "Civic Slate Manga",
+    "status": "PROPOSED",
+    "colors": [
+      "#101826",
+      "#1B2A3F",
+      "#3DA5FF",
+      "#3DD6A5",
+      "#EAF0F7"
+    ],
+    "accent": "#FF7A59",
+    "mood": "Warm, character-driven, expressive, readable; manga-inspired original artwork over 3D gameplay, never presented as gameplay screenshot",
+    "bakedDialogue": false
+  },
+  "templates": [
+    {
+      "id": "T01_establishing",
+      "purpose": "establishing",
+      "aspectRatio": "16:9",
+      "slots": [
+        "background",
+        "foreground",
+        "caption_safe"
+      ],
+      "composition": "Top 18% or bottom 20% caption-safe; scene orientation, location and mood",
+      "mobile": "Full-width then stacked image and text on narrow screens",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T02_character_close",
+      "purpose": "dialogue",
+      "aspectRatio": "4:5",
+      "slots": [
+        "portrait",
+        "speech_safe",
+        "caption_safe"
+      ],
+      "composition": "Face on one side, 25% side speech-safe zone, separate engine text",
+      "mobile": "Portrait image above semantic dialogue; no baked text",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T03_two_shot",
+      "purpose": "dialogue",
+      "aspectRatio": "16:9",
+      "slots": [
+        "character_left",
+        "character_right",
+        "speech_left",
+        "speech_right"
+      ],
+      "composition": "Separate left/right dialogue anchors; avoid faces/hand occlusion",
+      "mobile": "Stacked portraits with speaker names and ordered speech",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T04_choice",
+      "purpose": "decision",
+      "aspectRatio": "3:4",
+      "slots": [
+        "image",
+        "choice_overlay_safe",
+        "caption_safe"
+      ],
+      "composition": "Choice controls outside art region, at least 48px targets",
+      "mobile": "Art first, choices in DOM list after; focus to choice heading",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T05_action_sequence",
+      "purpose": "action",
+      "aspectRatio": "16:9",
+      "slots": [
+        "action_start",
+        "action_result",
+        "caption_safe"
+      ],
+      "composition": "Two-panel sequence with chronological left-to-right reading order",
+      "mobile": "Vertical sequence, explicit panel labels and descriptions",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T06_reaction",
+      "purpose": "emotion",
+      "aspectRatio": "4:5",
+      "slots": [
+        "character_expression",
+        "reaction_caption_safe"
+      ],
+      "composition": "Expression readable without color alone; no text over face",
+      "mobile": "Portrait followed by reaction narration and speaker label",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T07_location_transition",
+      "purpose": "transition",
+      "aspectRatio": "16:9",
+      "slots": [
+        "location_a",
+        "route_indicator",
+        "location_b",
+        "caption_safe"
+      ],
+      "composition": "Transition between the three domains; no fabricated travel duration",
+      "mobile": "Two ordered scene images and travel summary; skip animation",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    },
+    {
+      "id": "T08_recap",
+      "purpose": "summary",
+      "aspectRatio": "1:1",
+      "slots": [
+        "visual_recap",
+        "decision_summary",
+        "continue"
+      ],
+      "composition": "Shows choices and flags without inventing rewards or wages",
+      "mobile": "Semantic summary and replay/continue actions",
+      "accessibility": {
+        "altTextRequired": true,
+        "semanticOrder": true,
+        "captionsSeparate": true,
+        "skipAndReplay": true,
+        "reducedMotion": true
+      },
+      "status": "DRAFT_UNAPPROVED"
+    }
+  ],
+  "assetManifestTemplate": {
+    "assetId": "OPP-STORY-CH01-SC01-P01-V001",
+    "status": "PROPOSED",
+    "filePath": null,
+    "sourceType": "original_generated_or_owned",
+    "generator": {
+      "model": null,
+      "version": null,
+      "prompt": null,
+      "negativePrompt": null,
+      "seed": null,
+      "generatedAtUTC": null
+    },
+    "references": [],
+    "license": {
+      "type": null,
+      "sourceUrl": null,
+      "rightsHolder": null,
+      "redistributionAllowed": null
+    },
+    "visual": {
+      "templateId": "T01_establishing",
+      "palette": [
+        "#101826",
+        "#1B2A3F",
+        "#3DA5FF",
+        "#3DD6A5",
+        "#EAF0F7"
+      ],
+      "widthPx": null,
+      "heightPx": null,
+      "format": null,
+      "byteSize": null,
+      "sha256": null,
+      "textSafeZones": [],
+      "containsBakedDialogue": false
+    },
+    "review": {
+      "claudeStatus": "PENDING",
+      "rickStatus": "PENDING",
+      "reviewerNotes": [],
+      "approvedAtUTC": null
+    },
+    "engine": {
+      "sceneId": null,
+      "panelId": null,
+      "altText": null,
+      "captionStringId": null,
+      "verifiedInBrowser": false,
+      "proofUrl": null
+    }
+  },
+  "provisionalBudgets": {
+    "characterCanvas": {
+      "width": 1024,
+      "height": 1536,
+      "unit": "px",
+      "provisional": true
+    },
+    "backgroundMaxEdge": {
+      "value": 1600,
+      "unit": "px",
+      "provisional": true
+    },
+    "sceneBytes": {
+      "value": 1500000,
+      "unit": "bytes",
+      "provisional": true
+    },
+    "chapterBytes": {
+      "value": 20000000,
+      "unit": "bytes",
+      "provisional": true
+    }
+  },
+  "qualityGates": [
+    "S0 approval",
+    "Rick selects story premise",
+    "S1 model sheets review",
+    "S2 Chapter 1 script approval",
+    "S3 scene art approval",
+    "S4 live browser integration evidence"
+  ]
+}
