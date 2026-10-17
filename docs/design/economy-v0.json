@@ -1,0 +1,246 @@
+{
+  "version": "v0",
+  "status": "DEFAULT",
+  "approved": false,
+  "units": {
+    "currency": "cr",
+    "energy": "en",
+    "time": "game_day",
+    "realMinutesPerGameDay": {
+      "value": 60,
+      "provisional": true
+    }
+  },
+  "startingCredits": {
+    "value": 1000,
+    "provisional": true,
+    "approvalRequired": true,
+    "alternative": 1240
+  },
+  "actions": {
+    "npcShift": {
+      "creditChange": 120,
+      "energyChange": -20,
+      "requires": [
+        "eligible_employment_contract",
+        "completed_work_task",
+        "daily_cap"
+      ],
+      "cooldownSeconds": 3600,
+      "kind": "faucet"
+    },
+    "npcRuralTask": {
+      "creditChange": 70,
+      "energyChange": -15,
+      "requires": [
+        "posted_task",
+        "completed_work_task",
+        "daily_cap"
+      ],
+      "cooldownSeconds": 3600,
+      "kind": "faucet"
+    },
+    "shoeRepair": {
+      "creditChange": 60,
+      "energyChange": -10,
+      "requires": [
+        "customer_funded_escrow",
+        "practical_competence",
+        "materials",
+        "completed_contract"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "transfer"
+    },
+    "foodBundle": {
+      "creditChange": -24,
+      "energyChange": 15,
+      "requires": [
+        "npc_stock",
+        "sufficient_funds"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "sink"
+    },
+    "recoveryRest": {
+      "creditChange": -20,
+      "energyChange": 100,
+      "requires": [
+        "sufficient_funds"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "sink"
+    },
+    "freePublicRecovery": {
+      "creditChange": 0,
+      "energyChange": 60,
+      "requires": [
+        "public_service",
+        "once_per_game_day"
+      ],
+      "cooldownSeconds": 3600,
+      "kind": "transfer"
+    },
+    "localTransit": {
+      "creditChange": -12,
+      "energyChange": 0,
+      "requires": [
+        "different_stop",
+        "sufficient_funds"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "sink"
+    },
+    "crossDomainTransit": {
+      "creditChange": -20,
+      "energyChange": 0,
+      "requires": [
+        "different_domain",
+        "sufficient_funds"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "sink"
+    },
+    "rentWeekly": {
+      "creditChange": -120,
+      "energyChange": 0,
+      "requires": [
+        "rent_due",
+        "housing_support_checked"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "transfer"
+    },
+    "civicContribution": {
+      "creditChange": -10,
+      "energyChange": 0,
+      "requires": [
+        "user_selected_amount_10_to_50",
+        "project_escrow",
+        "sufficient_funds"
+      ],
+      "cooldownSeconds": 0,
+      "kind": "transfer"
+    }
+  },
+  "goods": {
+    "wheat": {
+      "basePrice": 4,
+      "floor": 3,
+      "ceiling": 6,
+      "source": "both"
+    },
+    "flour": {
+      "basePrice": 10,
+      "floor": 8,
+      "ceiling": 14,
+      "source": "both"
+    },
+    "bread": {
+      "basePrice": 8,
+      "floor": 6,
+      "ceiling": 12,
+      "source": "both"
+    },
+    "essentialFoodBundle": {
+      "basePrice": 24,
+      "floor": 20,
+      "ceiling": 30,
+      "source": "npc"
+    }
+  },
+  "recipes": {
+    "bread": {
+      "inputs": {
+        "flour": 2
+      },
+      "outputs": {
+        "bread": 4
+      },
+      "energy": 1,
+      "seconds": 60
+    }
+  },
+  "loans": {
+    "exampleStudentLoan": {
+      "principal": 400,
+      "ratePerPeriod": 0.01,
+      "periodDays": 7,
+      "minPayment": 20
+    }
+  },
+  "faucets": [
+    {
+      "id": "citizen_start",
+      "perDayAtExpectedPace": 0,
+      "oneTimeCredits": 1000
+    },
+    {
+      "id": "npc_shift",
+      "perDayAtExpectedPace": 120
+    },
+    {
+      "id": "npc_rural_task",
+      "perDayAtExpectedPace": 0,
+      "alternativeDayCredits": 70
+    }
+  ],
+  "sinks": [
+    {
+      "id": "npc_food",
+      "perDayAtExpectedPace": 24
+    },
+    {
+      "id": "npc_transit",
+      "perDayAtExpectedPace": 12
+    },
+    {
+      "id": "npc_recovery",
+      "perDayAtExpectedPace": 0
+    },
+    {
+      "id": "npc_housing_if_retired",
+      "perDayAtExpectedPace": 17.14,
+      "conditional": true
+    },
+    {
+      "id": "npc_interest_if_retired",
+      "perDayAtExpectedPace": 0.57,
+      "conditional": true
+    }
+  ],
+  "transfers": [
+    {
+      "id": "player_wages"
+    },
+    {
+      "id": "player_sales"
+    },
+    {
+      "id": "repair_escrow"
+    },
+    {
+      "id": "civic_contribution"
+    },
+    {
+      "id": "npc_housing_if_circulating"
+    },
+    {
+      "id": "npc_interest_if_circulating"
+    }
+  ],
+  "expectedPace": {
+    "paidShiftsPerGameDay": 1,
+    "foodBundlesPerGameDay": 1,
+    "transitTripsPerGameDay": 1,
+    "weeklyRentCredits": 120,
+    "weeklyMinimumLoanPaymentCredits": 20
+  },
+  "notes": [
+    "Every number is provisional; no approval or playtest evidence.",
+    "energyChange for recovery actions means target energy level, not additive delta; implementation must distinguish setEnergyTo from delta.",
+    "sink classification for NPC expenses requires settlement account to retire currency; otherwise classify as transfer.",
+    "client cannot create currency; all economic events require server validation, idempotency and balanced ledger postings.",
+    "Existing local ACTIONS constants are not superseded until foreman approval."
+  ]
+}
