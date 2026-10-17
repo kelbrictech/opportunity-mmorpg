@@ -1,0 +1,12 @@
+# Opportunity MMORPG — Render static client infrastructure
+# The live service was provisioned on Render and connected to this GitHub repository.
+# This blueprint records the deploy configuration; it does not manage an existing service automatically.
+services:
+  - type: web
+    name: opportunity-mmorpg-alpha
+    runtime: static
+    repo: https://github.com/kelbrictech/opportunity-mmorpg
+    branch: main
+    buildCommand: mkdir -p public && cp index.html public/index.html && cp -r src public/src
+    staticPublishPath: ./public
+    autoDeployTrigger: commit
