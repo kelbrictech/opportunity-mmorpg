@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opportunity — The Broken Shoes</title><style>
+:root{font-family:system-ui,sans-serif;background:#101826;color:#eaf0f7}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;box-sizing:border-box}
+main{width:min(720px,100%);background:#1b2a3f;border:1px solid #456079;border-radius:20px;padding:26px;box-sizing:border-box}
+h1{font-size:clamp(24px,5vw,36px)}p{line-height:1.6;color:#c9d7e6}.tag{color:#3dd6a5}button{background:#3da5ff;border:0;border-radius:10px;color:#101826;padding:13px 17px;font:inherit;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}button:hover,button:focus-visible{outline:3px solid #3dd6a5;outline-offset:2px}
+button.secondary{background:#354c69;color:white}.shoe{font-size:80px;text-align:center;padding:14px}.message{padding:12px;border-left:4px solid #3dd6a5;background:#122035}.meter{height:8px;border-radius:8px;background:#344c66;overflow:hidden}.fill{height:100%;background:#3dd6a5;transition:width .2s}small{color:#b3c4d5}
+</style></head><body><main><div class="tag">OPPORTUNITY · PLAYABLE QUEST 001</div><h1>The Broken Shoes</h1><div class="shoe" aria-hidden="true">👟</div><div class="meter"><div id="fill" class="fill"></div></div><p id="story"></p><section id="actions" aria-label="Quest choices"></section><p class="message" id="message" role="status">A delivery worker needs help before tomorrow's shift.</p><small id="meta"></small></main>
+<script type="module">
+import {initialQuest,transition,claimReward} from '../../src/quests/broken-shoes.js';
+const $=id=>document.getElementById(id), key='opportunity-quest-broken-shoes';
+let quest;try{quest=JSON.parse(localStorage.getItem(key))||initialQuest()}catch{quest=initialQuest()}
+if(quest.id!=='broken-shoes-v1')quest=initialQuest();
+const steps=['discover','inspect','plan','prepare','repair','check','resolve','complete'];
+const content={
+ discover:['A delivery worker arrives with damaged shoes. Their shift starts tomorrow.',[['Help the worker','accept']]],
+ inspect:['Examine the damage. The sole is peeling away; the upper fabric is intact.',[['The sole is separating','diagnose','sole'],['The upper is torn','diagnose','upper']]],
+ plan:['Choose a repair. Adhesive bonds a separating sole; stitching secures torn fabric.',[['Bond with adhesive','choose','adhesive'],['Repair with stitching','choose','stitch']]],
+ prepare:['Choose materials from the free starter kit.',[['Shoe adhesive','collect','glue'],['Strong thread','collect','thread']]],
+ repair:['Work carefully. Sequence matters: inspect the prompt after each action.',[]],
+ check:['Explain the physical principle behind your repair.',[['Adhesive forms a bond','explain','bond'],['Stitches hold a seam','explain','seam']]],
+ resolve:['The customer tries on the shoes. Check the outcome.',[['Deliver the shoes','finish']]],
+ complete:['Quest complete. Your choices shaped the outcome.',[['Claim prototype reward once','claim'],['Play again (reset quest)','reset']]]};
+function render(message){
+ const [story,choices]=content[quest.step];$('story').textContent=story;$('fill').style.width=((steps.indexOf(quest.step)+1)/steps.length*100)+'%';
+ const list=quest.step==='repair'?(quest.method==='adhesive'?['clean','apply','align','press']:['clean','align','stitch','inspect']).map(v=>[v[0].toUpperCase()+v.slice(1),'perform',v]):choices;
+ $('actions').replaceChildren();
+ for(const [label,action,value] of list){const b=document.createElement('button');b.textContent=label;b.addEventListener('click',()=>{
+ if(action==='reset'){quest=initialQuest();save();render('New attempt started.');return}
+ if(action==='claim'){const r=claimReward(quest,'quest-001');quest=r.state;save();render(r.message);return}
+ const r=transition(quest,action,value);quest=r.state;save();render(r.message);
+ });$('actions').append(b)}
+ $('message').textContent=message||'Make a choice to continue.';
+ $('meta').textContent='Stage: '+quest.step+' · Repair quality: '+quest.quality+' · Result: '+(quest.result||'pending')+' · Reward claimed: '+(quest.paid?'yes':'no')+' · Local prototype only; no real ledger payout';
+}
+function save(){localStorage.setItem(key,JSON.stringify(quest))}
+render();
+</script></body></html>
