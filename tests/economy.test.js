@@ -1,0 +1,10 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {transact} from '../src/economy.js';
+const base=()=>({credits:1240,debt:24000,energy:82,zone:'residential',employed:false,learned:false,skill:0});
+test('employment required before wages',()=>{const a=transact(base(),'shift');assert.equal(a.ok,false);const b=transact(base(),'apply');assert.equal(transact(b.state,'shift').state.credits,1420)});
+test('cannot work without energy',()=>{const s={...base(),employed:true,energy:5};assert.equal(transact(s,'shift').ok,false)});
+test('repair requires demonstrated skill',()=>{assert.equal(transact(base(),'repair').ok,false);const s=transact(base(),'study').state;assert.equal(transact(s,'repair').state.credits,1330);assert.equal(transact(s,'study').ok,false)});
+test('no negative wallet',()=>{const s={...base(),credits:5};assert.equal(transact(s,'rest').ok,false);assert.equal(s.credits,5)});
+test('travel fare and destination validated',()=>{const s=transact(base(),'travel',{zone:'rural'}).state;assert.equal(s.credits,1205);assert.equal(s.zone,'rural');assert.equal(transact(s,'travel',{zone:'rural'}).ok,false);assert.equal(transact(s,'travel',{zone:'moon'}).ok,false)});
+test('loan cannot overpay',()=>{const s={...base(),debt:30};const a=transact(s,'repay');assert.equal(a.state.debt,0);assert.equal(a.state.credits,1210)});
+test('civic spending accounted',()=>{const a=transact(base(),'contribute');assert.equal(a.state.credits,1190);assert.equal(a.state.contributed,50)});
+test('unknown action rejected',()=>assert.equal(transact(base(),'mintMoney').ok,false));
