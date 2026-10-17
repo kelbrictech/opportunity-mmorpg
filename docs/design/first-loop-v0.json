@@ -1,0 +1,134 @@
+{
+  "id": "opp-first-economic-loop",
+  "version": "v0",
+  "status": "DEFAULT",
+  "approved": false,
+  "startingCredits": {
+    "status": "UNDECIDED",
+    "testCandidates": [
+      0,
+      100,
+      250,
+      500,
+      1000,
+      1240
+    ],
+    "unit": "credits",
+    "allValuesProvisional": true
+  },
+  "states": [
+    {
+      "id": "graduate_created",
+      "requires": [
+        "origin",
+        "housing",
+        "debt_disclosed",
+        "test_wallet"
+      ]
+    },
+    {
+      "id": "counselled",
+      "requires": [
+        "career_development_office",
+        "three_explainable_pathways"
+      ],
+      "costCredits": 0
+    },
+    {
+      "id": "job_found",
+      "requires": [
+        "funded_npc_job",
+        "posted_requirements"
+      ]
+    },
+    {
+      "id": "applied",
+      "requires": [
+        "citizenmail_application",
+        "screening"
+      ]
+    },
+    {
+      "id": "contracted",
+      "requires": [
+        "accepted_contract",
+        "employer_payroll_funds"
+      ]
+    },
+    {
+      "id": "commuted",
+      "requires": [
+        "valid_route",
+        "fare_charged_once_or_walk"
+      ]
+    },
+    {
+      "id": "task_completed",
+      "requires": [
+        "eligible_work",
+        "task_validation"
+      ]
+    },
+    {
+      "id": "paid",
+      "requires": [
+        "completed_task",
+        "idempotent_ledger_transfer"
+      ]
+    },
+    {
+      "id": "essential_purchased",
+      "requires": [
+        "funds",
+        "inventory_transfer"
+      ]
+    },
+    {
+      "id": "recovered",
+      "requires": [
+        "paid_or_free_recovery"
+      ]
+    },
+    {
+      "id": "next_choice",
+      "requires": [
+        "save_or_repay_or_study_or_repeat"
+      ]
+    }
+  ],
+  "measurements": [
+    "credits_at_start",
+    "credits_before_first_wage",
+    "first_wage_delay_game_days",
+    "minimum_essential_spend_before_wage",
+    "affordable_distinct_paths",
+    "first_week_liquidity_min",
+    "time_to_first_wage_minutes",
+    "negative_balance_attempts",
+    "recovery_used",
+    "abandoned_or_blocked_path",
+    "end_of_week_wallet",
+    "end_of_week_debt",
+    "unbalanced_ledger_entries"
+  ],
+  "testScenarios": [
+    "walk_free_counselling",
+    "paid_transit",
+    "failed_application_retry",
+    "missed_workday"
+  ],
+  "decisionRule": "Choose smallest candidate with >=2 materially distinct feasible pre-wage paths across all origins and no hard lock after one missed workday; otherwise repair costs or loop before increasing credits.",
+  "acceptanceTests": [
+    "AT-01",
+    "AT-02",
+    "AT-03",
+    "AT-04",
+    "AT-07",
+    "AT-10",
+    "AT-12",
+    "AT-LOOP-01",
+    "AT-LOOP-02",
+    "AT-LOOP-03"
+  ],
+  "implementationNote": "Design only; not approved or tested. Do not replace prototype constants until Rick approval."
+}
